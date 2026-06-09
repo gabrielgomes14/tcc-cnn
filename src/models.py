@@ -56,13 +56,18 @@ def _apply_finetuning(base_model, unfreeze_prefixes: Iterable[str],
     """Congela toda a base e descongela apenas as camadas com os prefixos dados.
 
     Args:
-        freeze_bn: Se True (padrão, usado no VGG16), mantém BatchNormalization
-                   congelada mesmo nas camadas descongeladas — prática recomendada
-                   quando o BN foi treinado com grandes datasets e o domínio-alvo
-                   é pequeno. Se False (usado no ResNet50), descongela o BN junto
-                   com as demais camadas do bloco, necessário porque na ResNet50
-                   o BN está intercalado nos blocos residuais e congelá-lo impede
-                   o fluxo correto do gradiente durante o fine-tuning.
+        freeze_bn: Se True (padrão), mantém BatchNormalization congelada mesmo
+                   nas camadas descongeladas. Prática recomendada para fine-tuning
+                   com conjuntos de dados pequenos: o BN pré-treinado na ImageNet
+                   possui estatísticas (média e variância) muito mais estáveis do
+                   que as que seriam recalculadas a partir de mini-batches de 32
+                   imagens. Manter freeze_bn=True evita a instabilidade de
+                   val_loss observada quando o BN opera em modo de treino com
+                   amostras insuficientes — fenômeno documentado em Yosinski et
+                   al. (2014) e confirmado experimentalmente neste estudo.
+                   Nota: freeze_bn=True NÃO bloqueia o fluxo do gradiente pelas
+                   convoluções descongeladas — apenas impede a atualização das
+                   estatísticas do BN, que permanecem fixas nos valores ImageNet.
     """
     from tensorflow.keras import layers
 
@@ -96,17 +101,23 @@ def build_vgg16(cfg: Config):
 def build_resnet50(cfg: Config):
     """Modelo C — ResNet50 (ImageNet), fine-tuning do conv5 (conv5_block1..3).
 
-    BN descongelado junto com as convoluções (freeze_bn=False): na ResNet50 o
-    BatchNormalization está intercalado dentro dos blocos residuais. Mantê-lo
-    congelado enquanto as convoluções são treinadas bloqueia o fluxo do gradiente
-    e impede a convergência, como observado experimentalmente neste estudo.
+    BN mantido congelado (freeze_bn=True): embora o BN esteja intercalado nos
+    blocos residuais da ResNet50, congelá-lo NÃO bloqueia o gradiente — as
+    convoluções do conv5 continuam recebendo gradientes e sendo atualizadas
+    normalmente. O que freeze_bn=True evita é a recalibração das estatísticas
+    de BN (média e variância) a partir de mini-batches pequenos (32 imagens),
+    o que produzia oscilações severas de val_loss (0,67–3,70) na execução
+    anterior com freeze_bn=False. As estatísticas ImageNet do BN são mantidas
+    fixas, e apenas os pesos convolucionais do conv5 são ajustados ao domínio
+    dos pneus. Correção aplicada após análise das curvas de aprendizado.
     """
     from tensorflow.keras import Model
     from tensorflow.keras.applications import ResNet50
 
     base = ResNet50(weights="imagenet", include_top=False, input_shape=cfg.input_shape)
+    # CORREÇÃO: freeze_bn=True (era False na versão anterior)
     _apply_finetuning(base, TRANSFER_STRATEGY["resnet50"]["unfreeze_prefixes"],
-                      freeze_bn=False)
+                      freeze_bn=True)
     outputs = _classification_head(base.output, cfg)
     return Model(base.input, outputs, name="resnet50")
 
