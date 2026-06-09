@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip show *)",
+      "Bash(python *)",
+      "Bash(cd *)",
+      "Bash(pip install *)",
+      "Bash(echo \"EXIT $?\")",
+      "Bash(TF_CPP_MIN_LOG_LEVEL=3 python -m scripts.run_experiment --raw-dir data/raw --rebuild --models baseline --epochs 2 --quick --clahe none)",
+      "Bash(TF_CPP_MIN_LOG_LEVEL=3 python -m scripts.run_experiment --raw-dir data/raw --models baseline vgg16 resnet50 --epochs 2 --quick --clahe none)",
+      "Bash(TF_CPP_MIN_LOG_LEVEL=3 python -m scripts.run_experiment --raw-dir data/raw --models baseline --epochs 1 --quick --clahe on)",
+      "Bash(TF_CPP_MIN_LOG_LEVEL=3 python -m scripts.run_experiment --raw-dir data/raw --rebuild --models baseline vgg16 resnet50 --epochs 3 --quick --clahe both)"
+    ]
+  }
+}

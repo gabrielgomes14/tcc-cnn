@@ -1,0 +1,15 @@
+# Dados e resultados (gerados em runtime)
+data/
+outputs/
+*.h5
+*.keras
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Kaggle
+kaggle.json
