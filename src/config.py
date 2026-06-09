@@ -56,7 +56,7 @@ class Config:
 
     # Learning rates distintos: baixo para transfer learning, maior para o baseline.
     lr_transfer: float = 1e-4
-    lr_baseline: float = 1e-3
+    lr_baseline: float = 1e-4
 
     # ----- Cabeçalho de classificação (transfer learning) -----
     head_dense_units: int = 256                          # GlobalAvgPool -> Dense(256, ReLU) -> Dropout -> Dense(3, Softmax)
@@ -86,7 +86,7 @@ TRANSFER_STRATEGY: Dict[str, Dict] = {
     },
     "resnet50": {
         # Último estágio residual descongelado (conv5_block1..3); demais congelados.
-        "unfreeze_prefixes": ("conv5",),
+        "unfreeze_prefixes": ("conv5_block",),
     },
 }
 
