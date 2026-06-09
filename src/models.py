@@ -51,12 +51,18 @@ def _classification_head(x, cfg: Config):
     return layers.Dense(NUM_CLASSES, activation="softmax", name="predictions")(x)
 
 
-def _apply_finetuning(base_model, unfreeze_prefixes: Iterable[str]) -> None:
+def _apply_finetuning(base_model, unfreeze_prefixes: Iterable[str],
+                      freeze_bn: bool = True) -> None:
     """Congela toda a base e descongela apenas as camadas com os prefixos dados.
 
-    Camadas de BatchNormalization permanecem congeladas mesmo quando descongeladas
-    por prefixo, prática recomendada em fine-tuning para não desestabilizar as
-    estatísticas pré-treinadas.
+    Args:
+        freeze_bn: Se True (padrão, usado no VGG16), mantém BatchNormalization
+                   congelada mesmo nas camadas descongeladas — prática recomendada
+                   quando o BN foi treinado com grandes datasets e o domínio-alvo
+                   é pequeno. Se False (usado no ResNet50), descongela o BN junto
+                   com as demais camadas do bloco, necessário porque na ResNet50
+                   o BN está intercalado nos blocos residuais e congelá-lo impede
+                   o fluxo correto do gradiente durante o fine-tuning.
     """
     from tensorflow.keras import layers
 
@@ -64,30 +70,43 @@ def _apply_finetuning(base_model, unfreeze_prefixes: Iterable[str]) -> None:
     base_model.trainable = True
     for layer in base_model.layers:
         unfreeze = layer.name.startswith(prefixes)
-        if isinstance(layer, layers.BatchNormalization):
+        if freeze_bn and isinstance(layer, layers.BatchNormalization):
             layer.trainable = False
         else:
             layer.trainable = bool(unfreeze)
 
 
 def build_vgg16(cfg: Config):
-    """Modelo B — VGG16 (ImageNet), fine-tuning do bloco 5 (block5_conv1..3)."""
+    """Modelo B — VGG16 (ImageNet), fine-tuning do bloco 5 (block5_conv1..3).
+
+    BN mantido congelado (freeze_bn=True): VGG16 não possui BN nas camadas
+    convolucionais, portanto o parâmetro não tem efeito prático aqui, mas
+    mantém a interface consistente.
+    """
     from tensorflow.keras import Model
     from tensorflow.keras.applications import VGG16
 
     base = VGG16(weights="imagenet", include_top=False, input_shape=cfg.input_shape)
-    _apply_finetuning(base, TRANSFER_STRATEGY["vgg16"]["unfreeze_prefixes"])
+    _apply_finetuning(base, TRANSFER_STRATEGY["vgg16"]["unfreeze_prefixes"],
+                      freeze_bn=True)
     outputs = _classification_head(base.output, cfg)
     return Model(base.input, outputs, name="vgg16")
 
 
 def build_resnet50(cfg: Config):
-    """Modelo C — ResNet50 (ImageNet), fine-tuning do conv5 (conv5_block1..3)."""
+    """Modelo C — ResNet50 (ImageNet), fine-tuning do conv5 (conv5_block1..3).
+
+    BN descongelado junto com as convoluções (freeze_bn=False): na ResNet50 o
+    BatchNormalization está intercalado dentro dos blocos residuais. Mantê-lo
+    congelado enquanto as convoluções são treinadas bloqueia o fluxo do gradiente
+    e impede a convergência, como observado experimentalmente neste estudo.
+    """
     from tensorflow.keras import Model
     from tensorflow.keras.applications import ResNet50
 
     base = ResNet50(weights="imagenet", include_top=False, input_shape=cfg.input_shape)
-    _apply_finetuning(base, TRANSFER_STRATEGY["resnet50"]["unfreeze_prefixes"])
+    _apply_finetuning(base, TRANSFER_STRATEGY["resnet50"]["unfreeze_prefixes"],
+                      freeze_bn=False)
     outputs = _classification_head(base.output, cfg)
     return Model(base.input, outputs, name="resnet50")
 
