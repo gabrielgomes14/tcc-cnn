@@ -12,6 +12,8 @@ import os
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Tuple
 
+
+# Classes do problema, na ordem canônica usada em todo o pipeline.
 CLASSES: Tuple[str, ...] = ("good", "worn", "cracked")
 NUM_CLASSES: int = len(CLASSES)
 
@@ -21,41 +23,51 @@ RANDOM_SEED: int = 42
 
 @dataclass
 class Config:
-    """Hiperparâmetros e caminhos do experimento (Tabela 3.3.1 do TCC)."""
+    """Hiperparâmetros e caminhos do experimento (Seção 3.3.1 do TCC)."""
 
-    raw_dir: str = os.path.join("data", "raw")
-    consolidated_dir: str = os.path.join("data", "consolidated")
-    split_dir: str = os.path.join("data", "split") 
+    # ----- Dados -----
+    raw_dir: str = os.path.join("data", "raw")          # datasets brutos do Kaggle
+    consolidated_dir: str = os.path.join("data", "consolidated")  # dataset unificado (3 classes)
+    split_dir: str = os.path.join("data", "split")      # train/val/test estratificado
     outputs_dir: str = "outputs"
 
+    # ----- Divisão treino/val/teste (estratificada) -----
     train_ratio: float = 0.70
     val_ratio: float = 0.15
     test_ratio: float = 0.15
 
-    image_size: Tuple[int, int] = (224, 224)            
+    # ----- Entrada / pré-processamento -----
+    image_size: Tuple[int, int] = (224, 224)            # 224 x 224 x 3
     channels: int = 3
-    rescale: float = 1.0 / 255.0                         
+    rescale: float = 1.0 / 255.0                         # normalização para [0, 1]
 
-    rotation_range: int = 20                             
-    horizontal_flip: bool = True                         
-    zoom_range: float = 0.2                             
+    # ----- Data augmentation (somente no treino) -----
+    rotation_range: int = 20                             # rotações
+    horizontal_flip: bool = True                         # espelhamentos horizontais
+    zoom_range: float = 0.2                              # variações de zoom
 
+    # ----- Treinamento -----
     batch_size: int = 32
     max_epochs: int = 50
-    early_stopping_patience: int = 10                    
+    early_stopping_patience: int = 10                    # monitorando val_loss
     early_stopping_monitor: str = "val_loss"
-    dropout_rate: float = 0.5                            
+    dropout_rate: float = 0.5                            # camadas densas
     loss: str = "categorical_crossentropy"
 
+    # Mesmo learning rate para os três modelos (1e-4), mantendo os hiperparâmetros
+    # gerais idênticos; os dois campos existem apenas para permitir ajuste separado.
     lr_transfer: float = 1e-4
     lr_baseline: float = 1e-4
 
-    head_dense_units: int = 256                          
+    # ----- Cabeçalho de classificação (transfer learning) -----
+    head_dense_units: int = 256                          # GlobalAvgPool -> Dense(256, ReLU) -> Dropout -> Dense(3, Softmax)
 
-    use_class_weights: bool = True                       
+    # ----- Desbalanceamento -----
+    use_class_weights: bool = True                       # pesos proporcionais na perda, se houver desbalanceamento
 
-    clahe_clip_limit: float = 2.0                        
-    clahe_tile_grid: Tuple[int, int] = (8, 8)            
+    # ----- CLAHE (experimento auxiliar) -----
+    clahe_clip_limit: float = 2.0                        # limiar de corte do histograma local
+    clahe_tile_grid: Tuple[int, int] = (8, 8)            # grade de tiles
 
     @property
     def input_shape(self) -> Tuple[int, int, int]:
@@ -65,7 +77,7 @@ class Config:
         return asdict(self)
 
 
-# Estratégia de transfer learning por modelo (Seção 3.3.1 6 do TCC).
+# Estratégia de transfer learning por modelo (Seção 3.3.1 do TCC).
 # Para cada arquitetura pré-treinada indicamos o prefixo das camadas que devem
 # permanecer TREINÁVEIS (fine-tuning); as demais ficam congeladas.
 TRANSFER_STRATEGY: Dict[str, Dict] = {
@@ -85,7 +97,7 @@ TRANSFER_STRATEGY: Dict[str, Dict] = {
 # Dataset Bhathena 2021 (Tire Texture): {normal, cracked}
 SOURCE_LABEL_MAP: Dict[str, str] = {
     "good": "good",        # Warcoder
-    "defective": "worn",   # Warcoder 
+    "defective": "worn",   # Warcoder -> desgastado
     "normal": "good",      # Bhathena
     "cracked": "cracked",  # Bhathena
 }
