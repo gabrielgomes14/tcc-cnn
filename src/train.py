@@ -1,11 +1,10 @@
 """Treinamento das arquiteturas (Etapa 3 do protocolo) e medição de custo.
 
-Treina um modelo com os mesmos hiperparâmetros gerais (Tabela 2), aplicando
+Treina um modelo com os mesmos hiperparâmetros gerais (Seção 3.3.1), aplicando
 EarlyStopping (paciência de 10 épocas em val_loss) e registrando o custo
 computacional: número de parâmetros, tempo por época, tempo total e — após o
 treino — tempo médio de inferência por imagem (medido em evaluate.py).
 """
-
 from __future__ import annotations
 
 import time
