@@ -1,14 +1,3 @@
-"""Construção das três arquiteturas comparadas (Seção 9.2 e Tabelas 4 e 6 do TCC).
-
-  * Modelo A — CNN Baseline treinada do zero (Tabela 4);
-  * Modelo B — VGG16 com transfer learning (ImageNet) + fine-tuning do bloco 5;
-  * Modelo C — ResNet50 com transfer learning (ImageNet) + fine-tuning do conv5.
-
-O cabeçalho de classificação dos modelos de transfer learning é idêntico
-(GlobalAvgPool -> Dense(256, ReLU) -> Dropout(0,5) -> Dense(3, Softmax)),
-conforme a Tabela 6.
-"""
-
 from __future__ import annotations
 
 from typing import Iterable
