@@ -9,7 +9,7 @@ Datasets de origem:
   * Warcoder (2023) — Tyre Quality Classification: classes ``good`` e ``defective``.
   * Bhathena (2021) — Tire Texture Image Recognition: classes ``normal`` e ``cracked``.
 
-Mapeamento (Seção 6.1 do TCC):
+Mapeamento (Seção 3.1 do TCC):
   good (Warcoder) + normal (Bhathena) -> good
   defective (Warcoder)                -> worn
   cracked (Bhathena)                  -> cracked
