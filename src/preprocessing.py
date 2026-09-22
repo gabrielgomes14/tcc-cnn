@@ -24,7 +24,7 @@ def apply_clahe(image: np.ndarray, clip_limit: float = 2.0,
 
     A imagem é convertida para o espaço LAB; o CLAHE é aplicado apenas ao canal L
     (luminância), preservando a informação cromática (canais a, b). Conforme a
-    Seção 9.5 do TCC, isso realça as texturas locais (sulcos, rachaduras) sem
+    Seção 2.5 do TCC, isso realça as texturas locais (sulcos, rachaduras) sem
     distorcer as cores.
 
     Parameters
