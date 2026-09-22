@@ -1,4 +1,4 @@
-"""Orquestrador do experimento completo (protocolo da Seção 6.3 do TCC).
+"""Orquestrador do experimento completo (protocolo experimental).
 
 Executa, sob protocolo controlado, a comparação entre as três arquiteturas
 (baseline, VGG16, ResNet50), opcionalmente com e sem CLAHE, e consolida os

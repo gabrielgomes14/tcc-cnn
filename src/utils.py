@@ -14,8 +14,7 @@ import numpy as np
 def set_seeds(seed: int) -> None:
     """Fixa as sementes de NumPy, random e TensorFlow para reprodutibilidade.
 
-    Conforme a Seção 3.3.1 do TCC (random_seed = 42 em NumPy, TensorFlow e na
-    divisão do dataset).
+    Com random_seed = 42 em NumPy, TensorFlow e na divisão do dataset.
     """
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)

@@ -1,8 +1,7 @@
 """Configuração central do experimento.
 
 Reúne todos os hiperparâmetros e constantes do protocolo experimental definidos
-na metodologia do TCC (tabelas de hiperparâmetros e de estratégia de
-transfer learning, Seção 3.3.1). Centralizar esses valores garante que os três modelos sejam
+na metodologia do estudo. Centralizar esses valores garante que os três modelos sejam
 treinados sob condições idênticas, isolando a arquitetura como única variável.
 """
 
@@ -23,7 +22,7 @@ RANDOM_SEED: int = 42
 
 @dataclass
 class Config:
-    """Hiperparâmetros e caminhos do experimento (Seção 3.3.1 do TCC)."""
+    """Hiperparâmetros e caminhos do experimento."""
 
     # ----- Dados -----
     raw_dir: str = os.path.join("data", "raw")          # datasets brutos do Kaggle
@@ -77,7 +76,7 @@ class Config:
         return asdict(self)
 
 
-# Estratégia de transfer learning por modelo (Seção 3.3.1 do TCC).
+# Estratégia de transfer learning por modelo.
 # Para cada arquitetura pré-treinada indicamos o prefixo das camadas que devem
 # permanecer TREINÁVEIS (fine-tuning); as demais ficam congeladas.
 TRANSFER_STRATEGY: Dict[str, Dict] = {
