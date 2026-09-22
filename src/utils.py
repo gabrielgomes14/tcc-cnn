@@ -14,7 +14,7 @@ import numpy as np
 def set_seeds(seed: int) -> None:
     """Fixa as sementes de NumPy, random e TensorFlow para reprodutibilidade.
 
-    Conforme a Seção 6.3.1 do TCC (random_seed = 42 em NumPy, TensorFlow e na
+    Conforme a Seção 3.3.1 do TCC (random_seed = 42 em NumPy, TensorFlow e na
     divisão do dataset).
     """
     os.environ["PYTHONHASHSEED"] = str(seed)
@@ -81,10 +81,6 @@ def count_params(model) -> Dict[str, int]:
         "total": trainable + non_trainable,
     }
 
-
-# --------------------------------------------------------------------------- #
-# Gráficos
-# --------------------------------------------------------------------------- #
 def plot_learning_curves(history: Dict, title: str, out_path: str) -> None:
     """Salva as curvas de aprendizado (acurácia e perda por época)."""
     import matplotlib
