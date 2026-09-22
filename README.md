@@ -6,7 +6,7 @@ em três classes — `good` (bom estado), `worn` (desgastado) e `cracked` (racha
 
 Implementação do Trabalho de Conclusão de Curso de **Gabriel Gomes Galikosky**,
 Bacharelado em Sistemas de Informação — Instituto Federal Catarinense, Campus
-Araquari (2026). Orientador: Prof. Dr. Paulo Cesar Fernandes de Oliveira.
+Araquari (2026). Orientador: Prof. Marcio Marcelo Piffer.
 
 > O objetivo central **não** é propor um sistema de inspeção, mas **gerar
 > conhecimento sobre o comportamento relativo das arquiteturas** num domínio de
