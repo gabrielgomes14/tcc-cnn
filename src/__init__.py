@@ -3,7 +3,7 @@
 Trabalho de Conclusão de Curso — Gabriel Gomes Galikosky
 Bacharelado em Sistemas de Informação — IFC Campus Araquari (2026).
 
-Pacote com o protocolo experimental controlado descrito na metodologia do TCC:
+Pacote com o protocolo experimental controlado descrito na metodologia:
 consolidação do dataset, pré-processamento (incl. CLAHE), construção das três
 arquiteturas (Baseline, VGG16, ResNet50), treinamento, avaliação preditiva,
 mensuração de custo computacional e análise de erros.

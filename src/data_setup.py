@@ -9,7 +9,7 @@ Datasets de origem:
   * Warcoder (2023) — Tyre Quality Classification: classes ``good`` e ``defective``.
   * Bhathena (2021) — Tire Texture Image Recognition: classes ``normal`` e ``cracked``.
 
-Mapeamento (Seção 3.1 do TCC):
+Mapeamento:
   good (Warcoder) + normal (Bhathena) -> good
   defective (Warcoder)                -> worn
   cracked (Bhathena)                  -> cracked
@@ -69,7 +69,7 @@ def consolidate(raw_dir: str, consolidated_dir: str, dedup: bool = True) -> Dict
 
     Retorna a contagem de imagens por classe-alvo. Aplica deduplicação exata por
     hash de conteúdo (relevante sobretudo para a classe ``good``, oriunda de dois
-    datasets, evitando redundância — Seção 6.1 do TCC).
+    datasets, evitando redundância).
     """
     if not os.path.isdir(raw_dir):
         raise FileNotFoundError(

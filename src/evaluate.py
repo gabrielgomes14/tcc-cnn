@@ -108,7 +108,7 @@ def measure_inference_time(model, test_gen, warmup: int = 1, runs: int = 3) -> f
 
 
 def build_comparison_table(results: List[Dict]) -> List[Dict]:
-    """Monta a tabela comparativa consolidada entre arquiteturas (Seção 6.4).
+    """Monta a tabela comparativa consolidada entre arquiteturas.
 
     Cada linha reúne desempenho preditivo (acurácia, F1 macro/weighted) e custo
     computacional (parâmetros, tempo de treino, inferência).

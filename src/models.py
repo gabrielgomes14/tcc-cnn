@@ -1,12 +1,12 @@
-"""Construção das três arquiteturas comparadas (Seção 9.2 e Tabelas 4 e 6 do TCC).
+"""Construção das três arquiteturas comparadas.
 
- * Modelo A - CNN Baseline treinada do zero (Tabela 4);
- * Modelo B - VGG16 com transfer learning (ImageNet) + fine-tuning do bloco 5;
- * Modelo C - ResNet50 com transfer learning (ImageNet) + fine-tuning do conv5.
+    * Modelo A - CNN Baseline treinada do zero;
+    * Modelo B - VGG16 com transfer learning (ImageNet) + fine-tuning do bloco 5;
+    * Modelo C - ResNet50 com transfer learning (ImageNet) + fine-tuning do conv5.
 
 O cabeçalho de classificação dos modelos de transfer learning é idêntico
 (GlobalAvgPool -> Dense(256, ReLU) -> Dropout(0,5) -> Dense(3, Softmax)),
-conforme a Tabela 6.
+conforme a estratégia de transfer learning do TCC.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from .config import NUM_CLASSES, TRANSFER_STRATEGY, Config
 
 
 def build_baseline(cfg: Config):
-    """Modelo A - CNN Baseline (Tabela 4 do TCC).
+    """Modelo A - CNN Baseline.
 
     Quatro blocos convolucionais (Conv 3x3 + BatchNorm + ReLU + MaxPool 2x2) com
     32, 64, 128 e 128 filtros, seguidos de Flatten, Dense(128) + Dropout(0,5) e
@@ -51,7 +51,7 @@ def build_baseline(cfg: Config):
 
 
 def _classification_head(x, cfg: Config):
-    """Cabeçalho comum aos modelos de transfer learning (Tabela 6)."""
+    """Cabeçalho comum aos modelos de transfer learning."""
     from tensorflow.keras import layers
 
     x = layers.GlobalAveragePooling2D(name="gap")(x)
@@ -83,7 +83,7 @@ def _apply_finetuning(
             que as que seriam recalculadas a partir de mini-batches de 32
             imagens. Manter freeze_bn=True evita a instabilidade de
             val_loss observada quando o BN opera em modo de treino com
-            amostras insuficientes e confirmado experimentalmente neste estudo.
+            amostras insuficientes, comportamento observado experimentalmente neste estudo.
             Nota: freeze_bn=True NÃO bloqueia o fluxo do gradiente pelas
             convoluções descongeladas - apenas impede a atualização das
             estatísticas do BN, que permanecem fixas nos valores ImageNet.
