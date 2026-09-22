@@ -3,7 +3,7 @@
 Implementa:
   * Redimensionamento para 224x224 e normalização para [0, 1];
   * Data augmentation (rotação, espelhamento horizontal, zoom) — somente no treino;
-  * CLAHE no canal de luminância (experimento auxiliar — Seção 9.5 do TCC).
+  * CLAHE no canal de luminância (experimento auxiliar — Seção 2.5 do TCC).
 
 O mesmo pré-processamento é aplicado às três arquiteturas, de modo que diferenças
 de desempenho sejam atribuíveis à arquitetura, e não ao tratamento das imagens.
