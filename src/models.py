@@ -83,8 +83,7 @@ def _apply_finetuning(
             que as que seriam recalculadas a partir de mini-batches de 32
             imagens. Manter freeze_bn=True evita a instabilidade de
             val_loss observada quando o BN opera em modo de treino com
-            amostras insuficientes - fenômeno documentado em Yosinski et
-            al. (2014) e confirmado experimentalmente neste estudo.
+            amostras insuficientes e confirmado experimentalmente neste estudo.
             Nota: freeze_bn=True NÃO bloqueia o fluxo do gradiente pelas
             convoluções descongeladas - apenas impede a atualização das
             estatísticas do BN, que permanecem fixas nos valores ImageNet.
