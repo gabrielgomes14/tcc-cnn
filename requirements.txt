@@ -1,5 +1,5 @@
 # Detecção de Desgaste em Pneus — TCC Gabriel Gomes Galikosky (IFC Araquari, 2026)
-# Versões compatíveis com Google Colab (GPU T4). Python 3.10+.
+# Versões compatíveis com Google Colab (GPU L4). Python 3.10+.
 tensorflow==2.15.0
 opencv-python-headless>=4.8
 numpy>=1.24
