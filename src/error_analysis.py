@@ -2,7 +2,7 @@
 
 Verifica se os erros das três arquiteturas são correlacionados (mesmas imagens
 difíceis para todos) ou distintos (cada arquitetura erra em conjuntos diferentes),
-conforme a Seção 6.4 do TCC ("sobreposição dos exemplos errados entre arquiteturas").
+conforme a Seção 3.4 do TCC ("sobreposição dos exemplos errados entre arquiteturas").
 """
 
 from __future__ import annotations
